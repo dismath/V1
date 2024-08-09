@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Rompecabezas</title>
+    <style>
+        body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.game-container {
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#level-select button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.puzzle {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+    margin: 20px auto;
+    max-width: 100%;
+}
+
+.puzzle div {
+    background: #f1c40f;
+    padding: 20px;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+@media (orientation: landscape) {
+    .puzzle {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Juego de Rompecabezas</h1>
+        <div id="level-select">
+            <button onclick="setLevel(1)">Nivel 1</button>
+            <button onclick="setLevel(2)">Nivel 2</button>
+            <button onclick="setLevel(3)">Nivel 3</button>
+        </div>
+        <div class="puzzle" id="puzzle"></div>
+        <button id="restart-button" onclick="startGame()">Reiniciar Juego</button>
+    </div>
+    <script>
+let currentLevel = 1;
+let puzzleContainer = document.getElementById('puzzle');
+
+const levels = {
+    1: [1, 2, 3, 4, 5, 6, 7, 8, 0],
+    2: [
+        { value: 4, operation: "3+1" },
+        { value: 8, operation: "4+4" },
+        { value: 7, operation: "5+2" },
+        { value: 6, operation: "4+2" },
+        { value: 5, operation: "3+2" },
+        { value: 1, operation: "0+1" },
+        { value: 2, operation: "1+1" },
+        { value: 3, operation: "1+2" },
+        { value: 0, operation: "" }
+    ],
+    3: [
+        { value: 2, operation: "1x2" },
+        { value: 4, operation: "2x2" },
+        { value: 6, operation: "2x3" },
+        { value: 8, operation: "2x4" },
+        { value: 10, operation: "2x5" },
+        { value: 12, operation: "2x6" },
+        { value: 14, operation: "2x7" },
+        { value: 16, operation: "2x8" },
+        { value: 0, operation: "" }
+    ]
+};
+
+function setLevel(level) {
+    currentLevel = level;
+    startGame();
+}
+
+function startGame() {
+    let puzzleData = levels[currentLevel];
+    shuffle(puzzleData);
+    renderPuzzle(puzzleData);
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function renderPuzzle(puzzleData) {
+    puzzleContainer.innerHTML = '';
+    puzzleData.forEach((item, index) => {
+        let cell = document.createElement('div');
+        cell.textContent = currentLevel === 1 ? item : `${item.value}\n${item.operation}`;
+        cell.dataset.index = index;
+        cell.addEventListener('click', () => moveTile(index));
+        puzzleContainer.appendChild(cell);
+    });
+}
+
+function moveTile(index) {
+    let emptyIndex = levels[currentLevel].findIndex(tile => tile.value === 0);
+    if (isValidMove(index, emptyIndex)) {
+        [levels[currentLevel][index], levels[currentLevel][emptyIndex]] = [levels[currentLevel][emptyIndex], levels[currentLevel][index]];
+        renderPuzzle(levels[currentLevel]);
+        checkWin();
+    }
+}
+
+function isValidMove(index, emptyIndex) {
+    const gridSize = Math.sqrt(levels[currentLevel].length);
+    const row = Math.floor(index / gridSize);
+    const col = index % gridSize;
+    const emptyRow = Math.floor(emptyIndex / gridSize);
+    const emptyCol = emptyIndex % gridSize;
+    return Math.abs(row - emptyRow) + Math.abs(col - emptyCol) === 1;
+}
+
+function checkWin() {
+    const isWin = levels[currentLevel].every((tile, index) => tile.value === (index + 1) % levels[currentLevel].length);
+    if (isWin) {
+        setTimeout(() => alert('¡Felicidades! Has ganado.'), 100);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    startGame();
+});
+
+    </script>
+</body>
+</html>

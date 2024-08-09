@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Matemáticas - Nivel 1</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* styles.css */
+body {
+    font-family: 'Comic Sans MS', Arial, sans-serif;
+    background-color: #e0f7fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+.start-button, .action-button {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.start-button:hover, .action-button:hover {
+    background-color: #004d40;
+}
+
+#question-container {
+    text-align: center;
+}
+
+#question {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#answer {
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    width: calc(100% - 22px);
+    box-sizing: border-box;
+}
+
+#feedback {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#level-info {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+.game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #1b2838; /* Fondo del juego */
+        }
+
+        .menu-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            background-color: rgba(0, 121, 107, 0.8); /* Color con opacidad del 80% */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            z-index: 20;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(0, 95, 79, 0.8); /* Hover con opacidad del 80% */
+        }
+
+        .popup-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+            display: none;
+            z-index: 10;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .popup-menu button {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .popup-menu button:hover {
+            background-color: #005f4f;
+        }
+
+        .instructions {
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 10px;
+            background-color: rgba(186, 148, 11, 0.868);
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: calc(100% - 40px); /* Altura restando espacio para el botón y margen */
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .popup-menu {
+                width: 400px;
+                height: 300px;
+            }
+
+            .popup-menu button {
+                font-size: 1.25rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <button class="menu-button" onclick="toggleMenu()">|||</button>
+        <div class="popup-menu" id="popupMenu">
+            <a href="testmath.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Reiniciar</button>
+            </a>
+            <a href="TEST.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Salir</button>
+            </a>
+        </div>
+        <div class="iframe-container">
+            <div class="container">
+                <header>
+                    <h1>Test de Matemáticas <p> Primer Nivel</p></h1>
+                </header>
+                <div id="intro">
+                    <button id="start" class="start-button">Iniciar</button>
+                </div>
+                <div id="game" style="display: none;">
+                    <div id="question-container">
+                        <h2 id="question"></h2>
+                        <input type="text" id="answer" placeholder="Tu respuesta">
+                        <button id="submit" class="action-button">Enviar</button>
+                    </div>
+                    <div id="feedback"></div>
+                    <div id="level-info"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio id="backgroundMusic" src="https://s31.aconvert.com/convert/p3r68-cdx67/rdw0k-c6j2m.mp3" loop></audio> <!-- Agrega el elemento de audio -->
+    
+    <script>
+        function toggleMenu() {
+            var popup = document.getElementById("popupMenu");
+            popup.style.display = popup.style.display === "none" ? "block" : "none";
+        }
+
+        function restartGame() {
+            alert('Reiniciando el juego...');
+            toggleMenu();
+            // Lógica para reiniciar el juego
+        }
+
+        function continueGame() {
+            toggleMenu();
+            // Lógica para continuar el juego
+        }
+
+        function exitGame() {
+            alert('Saliendo del juego...');
+            toggleMenu();
+            // Lógica para salir del juego
+        }
+
+        // Ocultar las instrucciones después de 5 segundos
+        setTimeout(() => {
+            document.getElementById('instructions').style.display = 'none';
+        }, 9000);
+          // Reproduce el sonido de fondo al cargar la página
+          window.onload = function() {
+            var backgroundMusic = document.getElementById("backgroundMusic");
+            backgroundMusic.play();
+        };
+    </script>
+
+    <script>
+        const levels = [
+    { level: 1, operation: 'addition', numQuestions: 5 },
+    { level: 2, operation: 'subtraction', numQuestions: 5 },
+    { level: 3, operation: 'multiplication', numQuestions: 5 },
+    { level: 4, operation: 'division', numQuestions: 5 },
+    { level: 5, operation: 'mixed', numQuestions: 5 },
+    { level: 6, operation: 'mixed', numQuestions: 5 },
+    { level: 7, operation: 'word', numQuestions: 5 },
+    { level: 8, operation: 'word', numQuestions: 5 }
+];
+
+let currentLevel = 0;
+let currentQuestion = 0;
+let score = 0;
+
+const questionContainer = document.getElementById('question-container');
+const questionElement = document.getElementById('question');
+const answerInput = document.getElementById('answer');
+const submitButton = document.getElementById('submit');
+const feedbackElement = document.getElementById('feedback');
+const levelInfoElement = document.getElementById('level-info');
+const finishButton = document.getElementById('finish');
+const resetButton = document.getElementById('reset');
+const startButton = document.getElementById('start');
+
+const correctSound = new Audio('correct.mp3');
+const incorrectSound = new Audio('incorrect.mp3');
+
+startButton.addEventListener('click', startGame);
+submitButton.addEventListener('click', checkAnswer);
+
+function startGame() {
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    currentLevel = 0;
+    score = 0;
+    showLevel();
+}
+
+function showLevel() {
+    levelInfoElement.textContent = `Nivel ${levels[currentLevel].level}`;
+    currentQuestion = 0;
+    showQuestion();
+}
+
+function showQuestion() {
+    const level = levels[currentLevel];
+    let question;
+    switch (level.operation) {
+        case 'addition':
+            question = generateAdditionQuestion();
+            break;
+        case 'subtraction':
+            question = generateSubtractionQuestion();
+            break;
+        case 'multiplication':
+            question = generateMultiplicationQuestion();
+            break;
+        case 'division':
+            question = generateDivisionQuestion();
+            break;
+        case 'mixed':
+            question = generateMixedQuestion();
+            break;
+        case 'word':
+            question = generateWordProblem();
+            break;
+    }
+    questionElement.textContent = question.text;
+    questionContainer.dataset.answer = question.answer;
+}
+
+function checkAnswer() {
+    const userAnswer = parseFloat(answerInput.value);
+    const correctAnswer = parseFloat(questionContainer.dataset.answer);
+    if (userAnswer === correctAnswer) {
+        feedbackElement.textContent = '¡Correcto!';
+        score++;
+        correctSound.play();
+    } else {
+        feedbackElement.textContent = `Incorrecto. La respuesta correcta era ${correctAnswer}.`;
+        incorrectSound.play();
+    }
+    answerInput.value = '';
+    currentQuestion++;
+    if (currentQuestion < levels[currentLevel].numQuestions) {
+        showQuestion();
+    } else {
+        currentLevel++;
+        if (currentLevel < levels.length) {
+            showLevel();
+        } else {
+            endGame();
+        }
+    }
+}
+
+function endGame() {
+    feedbackElement.textContent = `¡Juego terminado! Tu puntuación final es ${score}.`;
+    levelInfoElement.textContent = '';
+    questionContainer.style.display = 'none';
+    finishButton.style.display = 'block';
+    resetButton.style.display = 'block';
+}
+
+function generateAdditionQuestion() {
+    const num1 = Math.floor(Math.random() * 10);
+    const num2 = Math.floor(Math.random() * 10);
+    return { text: `${num1} + ${num2} = ?`, answer: num1 + num2 };
+}
+
+function generateSubtractionQuestion() {
+    const num1 = Math.floor(Math.random() * 10);
+    const num2 = Math.floor(Math.random() * 10);
+    return { text: `${num1} - ${num2} = ?`, answer: num1 - num2 };
+}
+
+function generateMultiplicationQuestion() {
+    const num1 = Math.floor(Math.random() * 10);
+    const num2 = Math.floor(Math.random() * 10);
+    return { text: `${num1} * ${num2} = ?`, answer: num1 * num2 };
+}
+
+function generateDivisionQuestion() {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    return { text: `${num1 * num2} / ${num1} = ?`, answer: num2 };
+}
+
+function generateMixedQuestion() {
+    const operations = ['addition', 'subtraction', 'multiplication', 'division'];
+    const operation = operations[Math.floor(Math.random() * operations.length)];
+    switch (operation) {
+        case 'addition':
+            return generateAdditionQuestion();
+        case 'subtraction':
+            return generateSubtractionQuestion();
+        case 'multiplication':
+            return generateMultiplicationQuestion();
+        case 'division':
+            return generateDivisionQuestion();
+    }
+}
+
+function generateWordProblem() {
+    const problems = [
+        { text: 'Si tienes 3 manzanas y compras 2 más, ¿cuántas tienes en total?', answer: 5 },
+        { text: 'Si tienes 10 caramelos y das 4 a tus amigos, ¿cuántos te quedan?', answer: 6 }
+    ];
+    return problems[Math.floor(Math.random() * problems.length)];
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rompecabezas Matemático</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            max-height: 600PX;
+            height: 100%;
+        }
+
+        .instruction {
+            background-color: #f9e109;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            max-width: 100%;
+            box-sizing: border-box;
+        
+        }
+        @media (max-width: 10px) {
+            .instruction {
+                font-size: 1rem;
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .instruction {
+                font-size: 0.9rem;
+                padding: 6px;
+                margin-bottom: 10px;
+            }
+        }
+        .triangle {
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            margin: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .number-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ffc107;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .restart-button,
+        .level-button {
+            background-color: #3fc783;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+            margin-right: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 20px 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .menu-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            background-color: rgba(0, 121, 107, 0.8); /* Color con opacidad del 80% */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            z-index: 20;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(0, 95, 79, 0.8); /* Hover con opacidad del 80% */
+        }
+
+        .popup-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+            display: none;
+            z-index: 10;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .popup-menu button {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .popup-menu button:hover {
+            background-color: #005f4f;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <button class="menu-button" onclick="toggleMenu()">|||</button>
+        <div class="instruction" id="instruction">
+            Selecciona un nivel para empezar.
+        </div>
+        <div class="popup-menu" id="popupMenu">
+            <a href="JUNUMERO.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Reiniciar</button>
+            </a>
+            <a href="UNINDEX.HTML" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Salir</button>
+            </a>
+        </div>
+        <div class="triangle" id="triangle"></div>
+        <div class="number-container" id="number-container"></div>
+        <div>
+            <button class="level-button" onclick="startGame(1)">Nivel 1</button>
+            <button class="level-button" onclick="startGame(2)">Nivel 2</button>
+            <button class="level-button" onclick="startGame(3)">Nivel 3</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalMessage"></h2>
+            <button class="restart-button" onclick="restartGame()">Reiniciar Juego</button>
+        </div>
+    </div>
+
+    <audio id="correctSound" src="https://s19.aconvert.com/convert/p3r68-cdx67/5y3jq-z6yqz.mp3" preload="auto"></audio>
+    <audio id="incorrectSound" src="https://s17.aconvert.com/convert/p3r68-cdx67/54bu0-pch50.mp3" preload="auto"></audio>
+    <script>
+        function toggleMenu() {
+            var popup = document.getElementById("popupMenu");
+            popup.style.display = popup.style.display === "none" ? "block" : "none";
+        }
+
+        function restartGame() {
+            alert('Reiniciando el juego...');
+            toggleMenu();
+            // Lógica para reiniciar el juego
+        }
+
+        function continueGame() {
+            toggleMenu();
+            // Lógica para continuar el juego
+        }
+
+        function exitGame() {
+            alert('Saliendo del juego...');
+            toggleMenu();
+            // Lógica para salir del juego
+        }
+
+        // Ocultar las instrucciones después de 5 segundos
+        setTimeout(() => {
+            document.getElementById('instructions').style.display = 'none';
+        }, 9000);
+    </script>
+    <script>
+        let selectedNumber = null;
+        let currentLevel = 1;
+
+        function startGame(level) {
+            currentLevel = level;
+            setupGame();
+        }
+
+        function setupGame() {
+            let triangleHTML = '';
+            let numberHTML = '';
+            let circleCount;
+            let numberCount;
+            let instructionText;
+            let sumGoal;
+
+            switch(currentLevel) {
+                case 1:
+                    circleCount = 6;
+                    numberCount = 6;
+                    instructionText = 'Distribuya los dígitos del 1 al 6 en las casillas circulares del siguiente gráfico (un dígito en cada casilla circular), de tal manera que la suma de los dígitos en cada uno de los lados del triángulo sea 9.';
+                    sumGoal = 9;
+                    break;
+                case 2:
+                    circleCount = 10;
+                    numberCount = 10;
+                    instructionText = 'Distribuya los dígitos del 1 al 10 en las casillas circulares del siguiente gráfico (un dígito en cada casilla circular), de tal manera que la suma de los dígitos en cada uno de los lados del triángulo sea 15.';
+                    sumGoal = 15;
+                    break;
+                case 3:
+                    circleCount = 15;
+                    numberCount = 15;
+                    instructionText = 'Distribuya los dígitos del 1 al 15 en las casillas circulares del siguiente gráfico (un dígito en cada casilla circular), de tal manera que la suma de los dígitos en cada uno de los lados del triángulo sea 21.';
+                    sumGoal = 21;
+                    break;
+                default:
+                    return;
+            }
+
+            document.getElementById('instruction').innerText = instructionText;
+
+            // Generar círculos en forma de triángulo
+            let rowCount = 1;
+            for (let i = 1; i <= circleCount; i += rowCount) {
+                triangleHTML += '<div class="row">';
+                for (let j = 0; j < rowCount; j++) {
+                    triangleHTML += `<div class="circle" id="c${i + j}"></div>`;
+                }
+                triangleHTML += '</div>';
+                rowCount++;
+            }
+
+            document.getElementById('triangle').innerHTML = triangleHTML;
+
+            // Generar números
+            for (let i = 1; i <= numberCount; i++) {
+                numberHTML += `<div class="number" id="n${i}">${i}</div>`;
+            }
+
+            document.getElementById('number-container').innerHTML = numberHTML;
+
+            // Asignar eventos
+            document.querySelectorAll('.number').forEach(number => {
+                number.addEventListener('click', function() {
+                    selectedNumber = this;
+                    document.querySelectorAll('.number').forEach(n => n.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            document.querySelectorAll('.circle').forEach(circle => {
+                circle.addEventListener('click', function() {
+                    if (selectedNumber && !this.textContent) {
+                        this.textContent = selectedNumber.textContent;
+                        selectedNumber.classList.add('disabled');
+                        selectedNumber = null;
+                        checkSolution(sumGoal);
+                    }
+                });
+            });
+        }
+
+        function checkSolution(sumGoal) {
+            let circles = document.querySelectorAll('.circle');
+            let values = Array.from(circles).map(c => parseInt(c.textContent) || 0);
+
+            // Comprobar sumas para cada nivel (triángulo diferente)
+            let correct = false;
+            if (currentLevel === 1) {
+                correct = (values[0] + values[1] + values[2] === sumGoal &&
+                           values[0] + values[3] + values[5] === sumGoal &&
+                           values[2] + values[4] + values[5] === sumGoal);
+            } else if (currentLevel === 2) {
+                correct = (values[0] + values[1] + values[2] + values[3] === sumGoal &&
+                           values[4] + values[5] + values[6] + values[7] === sumGoal &&
+                           values[8] + values[9] + values[2] + values[3] === sumGoal);
+            } else if (currentLevel === 3) {
+                correct = (values[0] + values[1] + values[2] + values[3] + values[4] === sumGoal &&
+                           values[5] + values[6] + values[7] + values[8] + values[9] === sumGoal &&
+                           values[10] + values[11] + values[12] + values[13] + values[14] === sumGoal);
+            }
+
+            if (correct) {
+                showModal("¡Correcto!");
+                document.getElementById('correctSound').play();
+            } else if (Array.from(circles).every(c => c.textContent)) {
+                showModal("Incorrecto. Inténtalo de nuevo.");
+                document.getElementById('incorrectSound').play();
+            }
+        }
+
+        function showModal(message) {
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        function restartGame() {
+            closeModal();
+            setupGame();
+        }
+    </script>
+</body>
+</html>

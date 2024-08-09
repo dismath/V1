@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Rompecabezas</title>
+    <style>
+        body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.game-container {
+    text-align: center;
+    max-width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.difficulty-selector {
+    margin-bottom: 20px;
+}
+
+.difficulty-selector button {
+    background-color: #069c7c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 5px;
+}
+
+.puzzle {
+    display: grid;
+    gap: 5px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.tile {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+}
+
+.tile div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffc107;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.restart-button {
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 20px;
+}
+
+/* Adaptable a pantallas móviles */
+@media (max-width: 600px) {
+    .tile div {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .tile div {
+        font-size: 1rem;
+    }
+}
+
+
+.menu-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            background-color: rgba(0, 121, 107, 0.8); /* Color con opacidad del 80% */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            z-index: 20;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(0, 95, 79, 0.8); /* Hover con opacidad del 80% */
+        }
+
+        .popup-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+            display: none;
+            z-index: 10;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .popup-menu button {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .popup-menu button:hover {
+            background-color: #005f4f;
+        }
+
+        .instructions {
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 10px;
+            background-color: rgba(186, 148, 11, 0.868);
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: calc(100% - 40px); /* Altura restando espacio para el botón y margen */
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .popup-menu {
+                width: 400px;
+                height: 300px;
+            }
+
+            .popup-menu button {
+                font-size: 1.25rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <button class="menu-button" onclick="toggleMenu()">|||</button>
+        <div class="popup-menu" id="popupMenu">
+            <a href="J1ROMPE.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Reiniciar</button>
+            </a>
+            <a href="JUEGOSAPP.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Salir</button>
+            </a>
+        </div>
+        <h1>Juego de Rompecabezas</h1>
+        <div class="difficulty-selector">
+            <button onclick="initializeGame(3)">Fácil (3x3)</button>
+            <button onclick="initializeGame(4)">Medio (4x4)</button>
+            <button onclick="initializeGame(5)">Difícil (5x5)</button>
+        </div>
+        <div class="puzzle" id="puzzle"></div>
+        <button class="restart-button" onclick="initializeGame(currentLevel)">Reiniciar Juego</button>
+    </div>
+
+    <audio id="correctSound" src="correct.mp3" preload="auto"></audio>
+    <audio id="incorrectSound" src="incorrect.mp3" preload="auto"></audio>
+    <script>
+        function toggleMenu() {
+            var popup = document.getElementById("popupMenu");
+            popup.style.display = popup.style.display === "none" ? "block" : "none";
+        }
+
+        function restartGame() {
+            alert('Reiniciando el juego...');
+            toggleMenu();
+            // Lógica para reiniciar el juego
+        }
+
+        function continueGame() {
+            toggleMenu();
+            // Lógica para continuar el juego
+        }
+
+        function exitGame() {
+            alert('Saliendo del juego...');
+            toggleMenu();
+            // Lógica para salir del juego
+        }
+
+        // Ocultar las instrucciones después de 5 segundos
+        setTimeout(() => {
+            document.getElementById('instructions').style.display = 'none';
+        }, 9000);
+    </script>
+    <script>
+        const puzzle = document.getElementById('puzzle');
+const correctSound = document.getElementById('correctSound');
+const incorrectSound = document.getElementById('incorrectSound');
+let tiles;
+let emptyTileIndex;
+let currentLevel = 3; // Nivel por defecto
+
+function initializeGame(level) {
+    currentLevel = level;
+    const numbers = [...Array(level * level - 1).keys()].map(x => x + 1);
+    numbers.push(null); // El espacio vacío
+    shuffleArray(numbers);
+    
+    puzzle.innerHTML = '';
+    puzzle.style.gridTemplateColumns = `repeat(${level}, 1fr)`;
+    numbers.forEach((number, index) => {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        if (number) {
+            const tileContent = document.createElement('div');
+            tileContent.textContent = number;
+            tile.addEventListener('click', () => moveTile(index));
+            tile.appendChild(tileContent);
+        } else {
+            emptyTileIndex = index;
+            tile.classList.add('empty');
+        }
+        puzzle.appendChild(tile);
+    });
+
+    tiles = document.querySelectorAll('.tile');
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function moveTile(index) {
+    const validMoves = [emptyTileIndex - 1, emptyTileIndex + 1, emptyTileIndex - currentLevel, emptyTileIndex + currentLevel];
+    if (validMoves.includes(index) && isValidMove(index)) {
+        [tiles[emptyTileIndex].innerHTML, tiles[index].innerHTML] = [tiles[index].innerHTML, tiles[emptyTileIndex].innerHTML];
+        [tiles[emptyTileIndex].classList, tiles[index].classList] = [tiles[index].classList, tiles[emptyTileIndex].classList];
+        emptyTileIndex = index;
+
+        if (checkWin()) {
+            correctSound.play();
+            setTimeout(() => alert('¡Felicidades! Has ganado el juego.'), 100);
+        }
+    } else {
+        incorrectSound.play();
+    }
+}
+
+function isValidMove(index) {
+    if (index % currentLevel === 0 && emptyTileIndex % currentLevel === currentLevel - 1) return false;
+    if (emptyTileIndex % currentLevel === 0 && index % currentLevel === currentLevel - 1) return false;
+    return true;
+}
+
+function checkWin() {
+    for (let i = 0; i < tiles.length - 1; i++) {
+        if (tiles[i].textContent != i + 1) {
+            return false;
+        }
+    }
+    return true;
+}
+
+initializeGame(currentLevel);
+
+    </script>
+</body>
+</html>

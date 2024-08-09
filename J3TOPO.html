@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>GOLPEA AL TOPO</title>
+    <style>
+body {
+    background: #f0d657;
+    color: #242419;
+    text-align: center;
+    font-family: Arial;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {    
+    font-size: 2em;
+    padding: 0 2em 0.8em 2em;
+    text-align: center;
+    margin: 0.5em 1em 1em 1em;
+}
+
+h2 {
+    font-size: 1.8em;
+    padding: 0 3em;
+    margin: 0;
+    color: #0429bd;
+}
+
+button {
+    width: 5em;
+    height: 2.5em;
+    border-radius: 0.7em;
+    background: #379777;
+    border: 0.1em solid transparent;
+    color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1.7em;
+    margin-bottom: 0.2em;
+}
+
+select {
+    padding: 0.5em 1em;
+    font-size: 1.2em;
+    border-radius: 4px;
+    background-color: #45474B;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    margin: 1em 0;
+    text-align-last: center;
+}
+  
+select:hover {
+    border-color: #666;
+}
+  
+select:focus {
+    outline: none;
+    box-shadow: 0 0 3px #666;
+}
+  
+select option {
+    padding: 8px;
+}
+
+#game-container {
+    width: 50%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+    text-align: center;
+    margin: 0 auto;
+    background: #f0d657;
+}
+
+#cabecera {
+    background: #379777;
+    box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.5);
+    color: white;
+    margin: 0;
+    padding: 0.5em 0;
+    text-align: center;
+    width: 100%;
+    font-size: 1.5em;
+}
+
+#tagline {
+    font-size: 2em;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    padding-bottom: 10px;
+}
+
+#post #level {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7em 0;
+}
+
+#start-game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+}
+
+#btn-level {
+    width: 6.5em;
+    height: 3em;
+    border-radius: 0.7em;
+    background: #379777;
+    border: 0.1em solid transparent;
+    color: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5em;
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+
+#timer {
+    font-size: 1.6em;
+    margin-bottom: 10px;
+}
+
+#score {
+    font-size: 1.6em;
+}
+
+#final-message {
+    padding: 1em 0.4em;
+    font-size: 1.8em;
+}
+
+#footer {
+    background: #379777;
+    color: white;
+    text-align: center;
+    padding: 0.5em;
+    font-size: 1.2em;
+}
+
+#img-footer {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    margin: 0 0 0 0.4em;
+}
+
+.hole {
+    width: 6em;
+    height: 6em;
+    background-color: #778C2A;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 10px;
+    position: relative;
+}
+
+.mole {
+    width: 74%;
+    height: 58%;
+    background-image: url(https://i.ibb.co/KxZVG1K/topo.png);
+    background-size: cover;
+    border-radius: 0;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    padding: 2px;
+}
+
+@media (max-width: 1440px) {
+    #game-container {
+        width: 70%;
+    }
+}
+
+@media (max-width: 1024px) {
+    #game-container {
+        width: 90%;
+    }
+    #tagline {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 768px) {
+    h2 {
+        padding: 0 2em;
+    }
+    #game-container {
+        width: 100%;
+    } 
+    #post {
+        display: flex;
+        text-align: center;
+        flex-direction: column;
+    }
+    #timer {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    
+    #score {
+        font-size: 1.5em;
+    }
+    #final-message {
+        padding: 1em 0.4em;
+        font-size: 1.7em;
+    }
+    .hole {
+        width: 5em;
+        height: 5em;
+        margin: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        margin:0.5em 0.1em;
+        font-size: 1.7em;
+        padding: 0;
+    }
+    h2 {
+        font-size: 1.5em;
+        padding: 0 1em;
+    }
+    button {
+        width: 4.6em;
+        height: 2.3em;
+        font-size: 1.5em;
+    }
+    select {
+        padding: 0.5em 0.2em;
+    }
+    #btn-level {
+        width: 6em;
+        height: 2.8em;
+        font-size: 1.3em;
+    }
+    #tagline {
+        font-size: 1.5em;
+    }
+    .hole {
+        width: 4.5em;
+        height: 4.5em;
+        margin: 6px;
+    }
+}
+
+@media (max-width: 360px) {
+    button {
+        width: 4.5em;
+        height: 2.2em;
+        font-size: 1.3em;
+    }
+    select {
+        padding: 0.5em 0.2em;
+    }
+    #tagline {
+        font-size: 1.1em;
+    }
+    #btn-level {
+        width: 6.8em;
+        height: 2.8em;
+        font-size: 1.1em;
+    }
+    .hole {
+        width: 4em;
+        height: 4em;
+        margin: 5px;
+    }
+}
+  
+          
+
+        
+        .popup-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+            display: none;
+            z-index: 10;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .popup-menu button {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .popup-menu button:hover {
+            background-color: #005f4f;
+        }
+
+        @media (min-width: 1024px) {
+            .popup-menu {
+                width: 400px;
+                height: 300px;
+            }
+
+            .popup-menu button {
+                font-size: 1.25rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+
+<div id="game-container">  
+
+        <button class="menu-button" onclick="toggleMenu()">|||</button>
+        <div class="popup-menu" id="popupMenu">
+            <a href="J3TOPO.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Reiniciar</button>
+            </a>
+            <a href="JUEGOSAPP.html" class="section premium-section" style="display: block; text-decoration: none; color: inherit;">
+            <button>Salir</button>
+            </a>
+
+    </div>        
+    <div id="cabecera">
+        <span id="tagline">GOLPEA AL TOPO</span>
+    </div>
+        <div id="post">
+            <h1>Pégale a todos los topos que puedas antes de tiempo</h1>
+                <section id="start-game">
+                    <div id="level">
+                        <h2>¿Qué nivel quieres jugar?</h2>
+                        <select id="level-select">
+                            <option value="facil">Fácil</option>
+                            <option value="intermedio">Intermedio</option>
+                            <option value="dificil">Difícil</option>
+                        </select>
+                        <button id="btn-level">Elegir Nivel</button>
+                    </div>
+                        <button id="start-btn" style="display: none;">Iniciar</button>
+                </section>
+                    <div id="game-area"></div>
+                    <div id="timer"><span id="timer-value"></span></div>
+                    <div id="score"></div>
+                    <div id="final-message"></div>
+                    <div id="button-reload" style="display: none;">
+                        <button id="reboot" onclick="reloadGame()">Reiniciar</button>
+                    </div>
+        </div>
+            <audio id="background-music" autoplay loop>
+                <source src="https://pcjtecuador.com/wp-content/uploads/2024/08/avgolpetopo.mp3" type="audio/mpeg">
+                Tu navegador no soporta el elemento de audio.
+            </audio>
+</div>
+     <div id='bottomPagination'>
+
+<script>
+                function toggleMenu() {
+                    var popup = document.getElementById("popupMenu");
+                    popup.style.display = popup.style.display === "none" ? "block" : "none";
+                }
+        
+                function restartGame() {
+                    alert('Reiniciando el juego...');
+                    toggleMenu();
+                    // Lógica para reiniciar el juego
+                }
+        
+                function continueGame() {
+                    toggleMenu();
+                    // Lógica para continuar el juego
+                }
+        
+                function exitGame() {
+                    alert('Saliendo del juego...');
+                    toggleMenu();
+                    // Lógica para salir del juego
+                }
+        
+                // Ocultar las instrucciones después de 5 segundos
+                setTimeout(() => {
+                    document.getElementById('instructions').style.display = 'none';
+                }, 9000);
+</script>
+    <script>
+        // Variables del juego
+let timer
+let score
+let intervalId
+let finalMessage = document.getElementById("final-message")
+
+// Obtener elementos del DOM
+const startButton = document.getElementById("start-btn")
+const moles = document.getElementsByClassName("mole")
+const timerDisplay = document.getElementById("timer")
+const scoreDisplay = document.getElementById("score")
+const body = document.querySelector('body')
+const btnReload = document.getElementById("button-reload")
+const hideSelector = document.getElementById("start-game")
+
+//Insertar el tiempo restante de forma dinámica en HTML
+const timerValueElement = document.getElementById('timer-value')
+timerValueElement.textContent = timer;
+
+//Cambiar imagen del puntero
+body.addEventListener('mousedown', function() {
+    body.style.cursor = 'url(https://i.ibb.co/7kkys17/mazo-click.png), auto';
+})
+
+body.addEventListener('mouseup', function() {
+    body.style.cursor = 'url(https://i.ibb.co/wN54nfn/mazo.png), auto';
+})
+
+//Función para elegir nivel
+function levelSelect() {
+    const nivelSelect = document.getElementById('level-select')
+    const submitBtn = document.getElementById('btn-level')
+    const gameContainer = document.getElementById("game-area")
+    const hideLevel = document.getElementById("level")
+    submitBtn.addEventListener('click', function() {
+    gameContainer.innerHTML = '' // Limpiar el contenido anterior
+    const nivelSeleccionado = nivelSelect.value
+    let numberOfDiv
+
+    if (nivelSeleccionado === 'facil') {
+        numberOfDiv = 5;
+        startButton.style.display = 'block'
+        hideLevel.style.display = 'none'
+    } else if (nivelSeleccionado === 'intermedio') {
+        numberOfDiv = 10;
+        startButton.style.display = 'block'
+        hideLevel.style.display = 'none'
+    } else if (nivelSeleccionado === 'dificil') {
+        numberOfDiv = 15;
+        startButton.style.display = 'block'
+        hideLevel.style.display = 'none'
+    }
+
+    for (let i = 0; i < numberOfDiv; i++) {
+        const outerDiv = document.createElement('div');
+        const innerDiv = document.createElement('div');
+    
+        // Establece las clases, estilos u otros atributos según sea necesario
+        outerDiv.className = 'hole';
+        innerDiv.className = 'mole';
+    
+        // Agrega el div interior al div exterior
+        outerDiv.appendChild(innerDiv);
+    
+        // Agrega el div exterior al contenedor principal
+        gameContainer.appendChild(outerDiv);
+    }
+    }
+)}
+levelSelect();
+
+// Función para iniciar el juego
+function startGame() {
+    startButton.disabled = true
+    score = 0
+    timer = 15
+    timerDisplay.textContent = `Tiempo restante: ${timer}`
+    scoreDisplay.textContent = `Topos golpeados: ${score}`
+    hideSelector.style.display = "none"
+    
+    showRandomMole()
+    
+    intervalId = setInterval(() => {
+        timer--
+        timerDisplay.textContent = `Tiempo restante: ${timer}`
+        
+        if (timer === 0) {
+            endGame()
+        } else {
+            showRandomMole()
+        }
+    }, 1000)
+}
+
+// Función para mostrar un topo aleatorio
+function showRandomMole() {
+    hideAllMoles()
+    
+    const randomIndex = Math.floor(Math.random() * moles.length)
+    const randomMole = moles[randomIndex]
+    randomMole.style.display = "block"
+    
+    // Evento de clic para golpear al topo
+    randomMole.addEventListener('click', hitMole)
+}
+
+// Función para ocultar todos los topos
+function hideAllMoles() {
+    for (let mole of moles) {
+        mole.style.display = "none"
+        mole.removeEventListener('click', hitMole)
+    }
+}
+
+// Función para golpear al topo
+function hitMole() {
+    score++
+    scoreDisplay.textContent = `Topos golpeados: ${score}`
+    this.style.display = "none"
+}
+
+// Función para finalizar el juego
+function endGame() {
+    clearInterval(intervalId)
+    hideAllMoles()
+    startButton.disabled = false
+    finalMessage.innerText = "¡Fin del juego! Tu puntuación final es: "+ score
+    btnReload.style.display = 'block'
+}
+
+function showButtonReload() {
+}
+
+function reloadGame() {
+    location.reload()
+}
+
+// Evento de clic para iniciar el juego
+startButton.addEventListener("click", startGame)
+    </script>
+   
+    <script>
+        const audio = document.getElementById('background-music');
+audio.volume = 0.2;  // Establece el volumen inicial al 10%
+
+const muteButton = document.getElementById('mute-button');
+muteButton.addEventListener('click', () => {
+    if (audio.muted) {
+        audio.muted = false;
+        muteButton.textContent = '🔊';
+    } else {
+        audio.muted = true;
+        muteButton.textContent = '🔇';
+    }
+});
+
+    </script>
+</body>
+
+</html>
